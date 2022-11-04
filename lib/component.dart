@@ -144,8 +144,8 @@ void confirmPopup(BuildContext context, String msg1, String msg2) {
             // TODO : change onPressed Button Func - fetch return value (Y/N)
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              alertButton_yes("³×", context),
-              alertButton_no("¾Æ´Ï¿À", context)
+              alertButton_yes("ï¿½ï¿½", context),
+              alertButton_no("ï¿½Æ´Ï¿ï¿½", context)
             ],
           ),
         ],
@@ -159,7 +159,7 @@ void confirmPopup(BuildContext context, String msg1, String msg2) {
 /// [context] is <BuildContext> context - the context of Page that show this Pop-up.
 ///
 /// [msg1], [msg2] are Messages of Popup.
-void alertPopup(BuildContext context, String msg1, String msg2) {
+void alertPopup(BuildContext context, String msg1) {
   Widget showAlert() {
     return SizedBox(
       child: Row(mainAxisAlignment: MainAxisAlignment.center),
@@ -177,19 +177,12 @@ void alertPopup(BuildContext context, String msg1, String msg2) {
             padding: const EdgeInsets.all(25.0),
             child: Text(
               msg1,
-              style: grayTextStyle_07(12),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(25.0),
-            child: Text(
-              msg2,
-              style: grayTextStyle_07(12),
+              style: grayTextStyle_07(17),
             ),
           ),
           Padding(
             padding: EdgeInsets.all(0),
-            child: alertButtonOk("È®ÀÎ", context),
+            child: alertButtonOk("í™•ì¸", context),
           )
         ],
       ),
@@ -209,9 +202,9 @@ Widget questionButton(context) {
       // TODO : fix this later
       Navigator.pop(context);
       // for alertPopup test
-      // alertPopup(context, "¸Ş¼¼Áö1", "¸Ş¼¼Áö2");
+      // alertPopup(context, "ï¿½Ş¼ï¿½ï¿½ï¿½1", "ï¿½Ş¼ï¿½ï¿½ï¿½2");
       // for confirmPopup test
-      // confirmPopup(context, "¸Ş¼¼Áö1", "¸Ş¼¼Áö2");
+      // confirmPopup(context, "ï¿½Ş¼ï¿½ï¿½ï¿½1", "ï¿½Ş¼ï¿½ï¿½ï¿½2");
     },
   );
 }
@@ -374,7 +367,7 @@ Widget whiteButtonImgCurrent(
           color: Colors.white,
           borderRadius: BorderRadius.circular(25),
         ),
-        // child: Text("¼ö·É¼ø", style: whiteTextStyle(12)),
+        // child: Text("ï¿½ï¿½ï¿½É¼ï¿½", style: whiteTextStyle(12)),
         child: Row(children: [
           Image(
             image: AssetImage(imgPath),

@@ -11,17 +11,17 @@ Widget alertButtonOk(String content, BuildContext context) {
       Navigator.pop(context);
     },
     child: Container(
-      width: 200,
+      width: 150,
       height: 40,
       decoration: BoxDecoration(
-        color: grayColor_07,
+        color: mainColor.withOpacity(0.6),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Center(
         child: Text(
           content,
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 17,
             fontFamily: 'GmarketSans',
             color: Colors.white,
           ),
