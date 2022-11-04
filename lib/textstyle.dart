@@ -28,6 +28,16 @@ TextStyle blackTextStyle(double size_) {
 }
 
 /// [size_] is Text's FontSize
+TextStyle blackTextStyle_Bold(double size_) {
+  return TextStyle(
+    fontFamily: 'GmarketSans',
+    color: CupertinoColors.black,
+    fontSize: size_,
+    fontWeight: FontWeight.bold,
+  );
+}
+
+/// [size_] is Text's FontSize
 TextStyle grayTextStyle(double size_) {
   return TextStyle(
     fontFamily: 'GmarketSans',

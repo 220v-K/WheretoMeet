@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wheretomeet/colors.dart';
 import 'package:wheretomeet/component.dart';
+import 'package:wheretomeet/mainpage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,7 +11,7 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  static const String _title = 'Milk4Cup';
+  static const String _title = 'WhereToMeet';
 
   @override
   Widget build(BuildContext context) {
@@ -24,24 +25,6 @@ class MyApp extends StatelessWidget {
       ),
       title: _title,
       home: MainPage(),
-    );
-  }
-}
-
-class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
-
-  @override
-  State<MainPage> createState() => _MainPageState();
-}
-
-class _MainPageState extends State<MainPage> {
-  @override
-  Widget build(BuildContext context) {
-    return safeAreaPage(
-      mainColor,
-      Colors.white,
-      Container(),
     );
   }
 }

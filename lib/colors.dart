@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Colors for WhereToMeet - 개별연구
-const Color mainColor = Color.fromRGBO(255, 127, 0, 0);
+const Color mainColor = Color.fromRGBO(255, 127, 0, 1.0);
 
 // font
 const String mainFont = 'GmarketSansTTFMedium';
