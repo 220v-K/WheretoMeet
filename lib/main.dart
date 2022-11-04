@@ -1,9 +1,31 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wheretomeet/colors.dart';
 import 'package:wheretomeet/component.dart';
 
 void main() {
-  runApp(const MainPage());
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  static const String _title = 'Milk4Cup';
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoApp(
+      theme: CupertinoThemeData(
+        textTheme: CupertinoTextThemeData(
+          textStyle: TextStyle(
+            fontFamily: 'GmarketSans',
+          ),
+        ),
+      ),
+      title: _title,
+      home: MainPage(),
+    );
+  }
 }
 
 class MainPage extends StatefulWidget {
