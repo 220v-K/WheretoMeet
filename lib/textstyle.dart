@@ -21,7 +21,7 @@ const TextStyle defaultBoldTextStyle = TextStyle(
 /// [size_] is Text's FontSize
 TextStyle blackTextStyle(double size_) {
   return TextStyle(
-    fontFamily: 'GmarketSans',
+    fontFamily: 'NotosansKR',
     color: CupertinoColors.black,
     fontSize: size_,
   );
@@ -30,7 +30,7 @@ TextStyle blackTextStyle(double size_) {
 /// [size_] is Text's FontSize
 TextStyle blackTextStyle_Bold(double size_) {
   return TextStyle(
-    fontFamily: 'GmarketSans',
+    fontFamily: 'NotoSansKR',
     color: CupertinoColors.black,
     fontSize: size_,
     fontWeight: FontWeight.bold,
@@ -40,7 +40,7 @@ TextStyle blackTextStyle_Bold(double size_) {
 /// [size_] is Text's FontSize
 TextStyle grayTextStyle(double size_) {
   return TextStyle(
-    fontFamily: 'GmarketSans',
+    fontFamily: 'NotoSansKR',
     color: fontGray,
     fontSize: size_,
   );
@@ -49,7 +49,7 @@ TextStyle grayTextStyle(double size_) {
 /// [size_] is Text's FontSize
 TextStyle grayTextStyle_07(double size_) {
   return TextStyle(
-    fontFamily: 'GmarketSans',
+    fontFamily: 'NotoSansKR',
     color: grayColor_07,
     fontSize: size_,
   );
@@ -60,7 +60,7 @@ TextStyle grayTextStyle_07(double size_) {
 /// FontWeight - <Bold>
 TextStyle grayTextStyle_Bold(double size_) {
   return TextStyle(
-    fontFamily: 'GmarketSans',
+    fontFamily: 'NotoSansKR',
     color: fontGray,
     fontSize: size_,
     fontWeight: FontWeight.bold,
@@ -71,7 +71,7 @@ TextStyle grayTextStyle_Bold(double size_) {
 /// [textColor] is Text's Color.
 TextStyle customTextStyle(double size_, Color textColor) {
   return TextStyle(
-    fontFamily: 'GmarketSans',
+    fontFamily: 'NotoSansKR',
     color: textColor,
     fontSize: size_,
   );
@@ -82,7 +82,7 @@ TextStyle customTextStyle(double size_, Color textColor) {
 /// FontWeight - <Bold>
 TextStyle customTextStyle_Bold(double size_, Color textColor) {
   return TextStyle(
-    fontFamily: 'GmarketSans',
+    fontFamily: 'NotoSansKR',
     color: textColor,
     fontSize: size_,
     fontWeight: FontWeight.bold,
@@ -90,14 +90,14 @@ TextStyle customTextStyle_Bold(double size_, Color textColor) {
 }
 
 const TextStyle defaultTextStyle_gray = TextStyle(
-  fontFamily: 'GmarketSans',
+  fontFamily: 'NotoSansKR',
   color: Color.fromRGBO(0, 0, 0, 0.3),
 );
 
 /// [size_] is Text's FontSize.
 TextStyle whiteTextStyle(double size_) {
   return TextStyle(
-    fontFamily: 'GmarketSans',
+    fontFamily: 'NotoSansKR',
     color: Colors.white,
     fontSize: size_,
   );
@@ -107,7 +107,7 @@ TextStyle whiteTextStyle(double size_) {
 /// FontWeight - <Bold>
 TextStyle whiteTextStyle_Bold(double size_) {
   return TextStyle(
-    fontFamily: 'GmarketSans',
+    fontFamily: 'NotoSansKR',
     color: Colors.white,
     fontSize: size_,
     fontWeight: FontWeight.bold,
@@ -117,7 +117,7 @@ TextStyle whiteTextStyle_Bold(double size_) {
 /// [size_] is Text's FontSize
 TextStyle blueTextStyle(double size_) {
   return TextStyle(
-    fontFamily: 'GmarketSans',
+    fontFamily: 'NotoSansKR',
     color: fontBlueColor,
     fontSize: size_,
   );

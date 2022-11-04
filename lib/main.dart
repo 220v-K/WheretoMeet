@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: CupertinoThemeData(
         textTheme: CupertinoTextThemeData(
           textStyle: TextStyle(
-            fontFamily: 'GmarketSans',
+            fontFamily: 'NotoSansKR',
           ),
         ),
       ),
