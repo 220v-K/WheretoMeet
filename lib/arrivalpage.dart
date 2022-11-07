@@ -1,23 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:wheretomeet/arrivalpage.dart';
 import 'package:wheretomeet/colors.dart';
 import 'package:wheretomeet/component.dart';
 import 'package:wheretomeet/textForButton.dart';
 import 'package:wheretomeet/textstyle.dart';
 
-class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+class ArrivalPage extends StatefulWidget {
+  const ArrivalPage({Key? key}) : super(key: key);
 
   @override
-  State<MainPage> createState() => _MainPageState();
+  State<ArrivalPage> createState() => _ArrivalPageState();
 }
 
-class _MainPageState extends State<MainPage> {
-  List<String> departList = <String>[
-    "홍제역 3호선",
-    "서울역 1호선",
-    "신촌역 2호선",
+class _ArrivalPageState extends State<ArrivalPage> {
+  List<String> arriveList = <String>[
+    "충무로역 2호선",
+    "을지로3가역 3호선",
+    "동대문역사문화공원역 4호선",
   ];
 
   @override
@@ -32,24 +31,33 @@ class _MainPageState extends State<MainPage> {
           SizedBox(height: 20),
           guideText(),
           SizedBox(height: 20),
-          addDepartButton(),
+          addArriveButton(),
           SizedBox(height: 20),
-          departListView(width, height),
+          arriveListView(width, height),
           SizedBox(height: 20),
-          colorButtonText(
-              "다음", Colors.blue.withOpacity(0.7), whiteTextStyle(20), () {
-            Navigator.push(
-              context,
-              CupertinoPageRoute(builder: (context) => ArrivalPage()),
-            );
-          }),
-          SizedBox(height: 50)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              colorButtonText(
+                  "이전", Colors.red.withOpacity(0.8), whiteTextStyle(20), () {
+                Navigator.pop(context);
+              }),
+              colorButtonText(
+                  "다음", Colors.blue.withOpacity(0.7), whiteTextStyle(20), () {
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(builder: (context) => ArrivalPage()),
+                );
+              }),
+            ],
+          ),
+          SizedBox(height: 50),
         ],
       ),
     );
   }
 
-  Widget departListView(double width, double height) {
+  Widget arriveListView(double width, double height) {
     return Expanded(
       child: Scrollbar(
         thickness: 3.0,
@@ -58,16 +66,16 @@ class _MainPageState extends State<MainPage> {
           scrollDirection: Axis.vertical,
           padding: const EdgeInsets.all(8),
           shrinkWrap: true,
-          itemCount: departList.length,
+          itemCount: arriveList.length,
           itemBuilder: (BuildContext context, int index) {
-            return locationBox(width, departList[index]);
+            return locationBox(width, arriveList[index]);
           },
         ),
       ),
     );
   }
 
-  CupertinoButton addDepartButton() {
+  CupertinoButton addArriveButton() {
     return CupertinoButton(
       minSize: 0,
       padding: EdgeInsets.zero,
@@ -78,8 +86,8 @@ class _MainPageState extends State<MainPage> {
       ),
       onPressed: () {
         setState(() {
-          if (departList.length < 10) {
-            departList.add("더미데이터");
+          if (arriveList.length < 10) {
+            arriveList.add("더미데이터");
           } else {
             alertPopup(context, "최대 10개까지\n추가할 수 있습니다.");
           }
@@ -95,7 +103,7 @@ class _MainPageState extends State<MainPage> {
         TextSpan(
           style: blackTextStyle_Bold(20),
           children: const <TextSpan>[
-            TextSpan(text: '출발지를 입력하세요 (최대 10개)'),
+            TextSpan(text: '도착지 후보를 입력하세요'),
           ],
         ),
       ),

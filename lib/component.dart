@@ -5,6 +5,27 @@ import 'package:wheretomeet/colors.dart';
 import 'package:wheretomeet/textForButton.dart';
 import 'package:wheretomeet/textstyle.dart';
 
+CupertinoButton locationBox(double width, String location) {
+  return CupertinoButton(
+    onPressed: () {},
+    minSize: 0,
+    padding: EdgeInsets.symmetric(vertical: 5),
+    child: Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: mainColor, width: 1.5),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      width: width * 0.8,
+      height: 56,
+      child: Container(
+        margin: EdgeInsets.only(left: 20),
+        alignment: Alignment.centerLeft,
+        child: Text(location, style: blackTextStyle(20)),
+      ),
+    ),
+  );
+}
+
 /// [backgroundColor] is Color of outside of SafeArea.
 ///
 /// [safeAreaColor] is Color of SafeArea ( Inside ).
