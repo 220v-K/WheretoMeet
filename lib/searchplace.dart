@@ -6,6 +6,7 @@ import 'package:wheretomeet/colors.dart';
 import 'package:wheretomeet/component.dart';
 import 'package:wheretomeet/textForButton.dart';
 import 'package:wheretomeet/textstyle.dart';
+import 'package:wheretomeet/locations.dart' as locations;
 
 class SearchPlace extends StatefulWidget {
   const SearchPlace({Key? key}) : super(key: key);
@@ -19,8 +20,24 @@ class _SearchPlaceState extends State<SearchPlace> {
 
   final LatLng _center = const LatLng(45.521563, -122.677433);
 
-  void _onMapCreated(GoogleMapController controller) {
+  final Map<String, Marker> _markers = {};
+  Future<void> _onMapCreated(GoogleMapController controller) async {
     mapController = controller;
+    final googleOffices = await locations.getGoogleOffices();
+    setState(() {
+      _markers.clear();
+      for (final office in googleOffices.offices) {
+        final marker = Marker(
+          markerId: MarkerId(office.name),
+          position: LatLng(office.lat, office.lng),
+          infoWindow: InfoWindow(
+            title: office.name,
+            snippet: office.address,
+          ),
+        );
+        _markers[office.name] = marker;
+      }
+    });
   }
 
   @override
@@ -33,7 +50,7 @@ class _SearchPlaceState extends State<SearchPlace> {
       Column(
         children: [
           Container(
-            color: Colors.red,
+            color: Colors.white,
             width: width,
             height: height * 0.2,
           ),
@@ -41,9 +58,10 @@ class _SearchPlaceState extends State<SearchPlace> {
             child: GoogleMap(
               onMapCreated: _onMapCreated,
               initialCameraPosition: CameraPosition(
-                target: _center,
-                zoom: 11.0,
+                target: LatLng(0, 0),
+                zoom: 2.0,
               ),
+              markers: _markers.values.toSet(),
             ),
           ),
         ],
