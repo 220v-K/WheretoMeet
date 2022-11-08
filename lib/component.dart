@@ -2,12 +2,19 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wheretomeet/colors.dart';
+import 'package:wheretomeet/searchplace.dart';
 import 'package:wheretomeet/textForButton.dart';
 import 'package:wheretomeet/textstyle.dart';
 
-CupertinoButton locationBox(double width, String location) {
+CupertinoButton locationBox(
+    double width, String location, BuildContext context) {
   return CupertinoButton(
-    onPressed: () {},
+    onPressed: () {
+      Navigator.push(
+        context,
+        CupertinoPageRoute(builder: (context) => SearchPlace()),
+      );
+    },
     minSize: 0,
     padding: EdgeInsets.symmetric(vertical: 5),
     child: Container(

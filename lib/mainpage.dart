@@ -60,7 +60,7 @@ class _MainPageState extends State<MainPage> {
           shrinkWrap: true,
           itemCount: departList.length,
           itemBuilder: (BuildContext context, int index) {
-            return locationBox(width, departList[index]);
+            return locationBox(width, departList[index], context);
           },
         ),
       ),
