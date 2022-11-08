@@ -7,6 +7,8 @@ import 'package:wheretomeet/component.dart';
 import 'package:wheretomeet/textForButton.dart';
 import 'package:wheretomeet/textstyle.dart';
 import 'package:wheretomeet/locations.dart' as locations;
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 
 class SearchPlace extends StatefulWidget {
   const SearchPlace({Key? key}) : super(key: key);
@@ -26,17 +28,26 @@ class _SearchPlaceState extends State<SearchPlace> {
     final googleOffices = await locations.getGoogleOffices();
     setState(() {
       _markers.clear();
-      for (final office in googleOffices.offices) {
-        final marker = Marker(
-          markerId: MarkerId(office.name),
-          position: LatLng(office.lat, office.lng),
-          infoWindow: InfoWindow(
-            title: office.name,
-            snippet: office.address,
-          ),
-        );
-        _markers[office.name] = marker;
-      }
+      // for (final office in googleOffices.offices) {
+      //   final marker = Marker(
+      //     markerId: MarkerId(office.name),
+      //     position: LatLng(office.lat, office.lng),
+      //     infoWindow: InfoWindow(
+      //       title: office.name,
+      //       snippet: office.address,
+      //     ),
+      //   );
+      //   _markers[office.name] = marker;
+      // }
+      final marker = Marker(
+        markerId: MarkerId("Test"),
+        position: LatLng(37.5642135, 127.0016985),
+        infoWindow: InfoWindow(
+          title: "Test",
+          snippet: "Test",
+        ),
+      );
+      _markers["Test"] = marker;
     });
   }
 
@@ -49,20 +60,82 @@ class _SearchPlaceState extends State<SearchPlace> {
       Colors.white,
       Column(
         children: [
-          Container(
-            color: Colors.white,
-            width: width,
-            height: height * 0.2,
+          Row(
+            children: [
+              CupertinoButton(
+                  child: Icon(
+                    Icons.arrow_back_ios,
+                    color: Colors.black,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }),
+              // Container(
+              //   alignment: Alignment.center,
+              //   color: Colors.white,
+              //   height: height * 0.2,
+              //   child: Text(
+              //     "SearchPlace",
+              //     style: blackTextStyle(20),
+              //   ),
+              // ),
+              Container(
+                alignment: Alignment.topCenter,
+                padding: EdgeInsets.only(bottom: 3),
+                width: width * 0.6,
+                child: CupertinoTextField(
+                  placeholder: "위치를 입력해주세요",
+                  placeholderStyle:
+                      customTextStyle(16, Colors.black.withOpacity(0.5)),
+                  style: customTextStyle(16, Colors.black),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              Flexible(
+                child: SizedBox(),
+                flex: 1,
+                fit: FlexFit.tight,
+              ),
+              CupertinoButton(
+                alignment: Alignment.centerRight,
+                minSize: 0,
+                padding: EdgeInsets.zero,
+                child: Icon(
+                  Icons.search,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  // TODO : 검색 기능 구현
+                },
+              ),
+              SizedBox(width: 15),
+            ],
           ),
           Expanded(
             child: GoogleMap(
-              onMapCreated: _onMapCreated,
-              initialCameraPosition: CameraPosition(
-                target: LatLng(0, 0),
-                zoom: 2.0,
-              ),
-              markers: _markers.values.toSet(),
-            ),
+                onMapCreated: _onMapCreated,
+                initialCameraPosition: CameraPosition(
+                  target: LatLng(37.5642135, 127.0016985),
+                  zoom: 11.0,
+                ),
+                markers: _markers.values.toSet(),
+                myLocationEnabled: false,
+                zoomGesturesEnabled: true,
+                scrollGesturesEnabled: true,
+                compassEnabled: true,
+                rotateGesturesEnabled: true,
+                mapToolbarEnabled: true,
+                tiltGesturesEnabled: true,
+                onCameraMove: (CameraPosition cameraPosition) {},
+                // ignore: prefer_collection_literals
+                gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
+                  Factory<OneSequenceGestureRecognizer>(
+                    () => EagerGestureRecognizer(),
+                  ),
+                ].toSet()),
           ),
         ],
       ),
