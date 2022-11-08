@@ -4,6 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:wheretomeet/arrivalpage.dart';
 import 'package:wheretomeet/colors.dart';
 import 'package:wheretomeet/component.dart';
+import 'package:wheretomeet/searchplaceText.dart';
 import 'package:wheretomeet/textForButton.dart';
 import 'package:wheretomeet/textstyle.dart';
 import 'package:wheretomeet/locations.dart' as locations;
@@ -18,6 +19,8 @@ class SearchPlace extends StatefulWidget {
 }
 
 class _SearchPlaceState extends State<SearchPlace> {
+  String placeText = "";
+
   late GoogleMapController mapController;
 
   final LatLng _center = const LatLng(45.521563, -122.677433);
@@ -60,60 +63,7 @@ class _SearchPlaceState extends State<SearchPlace> {
       Colors.white,
       Column(
         children: [
-          Row(
-            children: [
-              CupertinoButton(
-                  child: Icon(
-                    Icons.arrow_back_ios,
-                    color: Colors.black,
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  }),
-              // Container(
-              //   alignment: Alignment.center,
-              //   color: Colors.white,
-              //   height: height * 0.2,
-              //   child: Text(
-              //     "SearchPlace",
-              //     style: blackTextStyle(20),
-              //   ),
-              // ),
-              Container(
-                alignment: Alignment.topCenter,
-                padding: EdgeInsets.only(bottom: 3),
-                width: width * 0.6,
-                child: CupertinoTextField(
-                  placeholder: "위치를 입력해주세요",
-                  placeholderStyle:
-                      customTextStyle(16, Colors.black.withOpacity(0.5)),
-                  style: customTextStyle(16, Colors.black),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-              Flexible(
-                child: SizedBox(),
-                flex: 1,
-                fit: FlexFit.tight,
-              ),
-              CupertinoButton(
-                alignment: Alignment.centerRight,
-                minSize: 0,
-                padding: EdgeInsets.zero,
-                child: Icon(
-                  Icons.search,
-                  color: Colors.black,
-                ),
-                onPressed: () {
-                  // TODO : 검색 기능 구현
-                },
-              ),
-              SizedBox(width: 15),
-            ],
-          ),
+          searchHeader(context),
           Expanded(
             child: GoogleMap(
                 onMapCreated: _onMapCreated,
@@ -139,6 +89,65 @@ class _SearchPlaceState extends State<SearchPlace> {
           ),
         ],
       ),
+    );
+  }
+
+  Row searchHeader(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    return Row(
+      children: [
+        CupertinoButton(
+          child: Icon(
+            Icons.arrow_back_ios,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        Container(
+          alignment: Alignment.topCenter,
+          padding: EdgeInsets.only(bottom: 3),
+          width: width * 0.6,
+          child: CupertinoTextField(
+            placeholder: "위치를 입력해주세요",
+            placeholderStyle:
+                customTextStyle(16, Colors.black.withOpacity(0.5)),
+            style: customTextStyle(16, Colors.black),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            onChanged: (value) {
+              setState(() {
+                placeText = value;
+              });
+            },
+          ),
+        ),
+        Flexible(
+          flex: 1,
+          fit: FlexFit.tight,
+          child: SizedBox(),
+        ),
+        CupertinoButton(
+          alignment: Alignment.centerRight,
+          minSize: 0,
+          padding: EdgeInsets.zero,
+          child: Icon(
+            Icons.search,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            // TODO : 검색 기능 구현
+            Navigator.push(
+              context,
+              CupertinoPageRoute(builder: (context) => SearchPlaceText()),
+            );
+          },
+        ),
+        SizedBox(width: 15),
+      ],
     );
   }
 }
