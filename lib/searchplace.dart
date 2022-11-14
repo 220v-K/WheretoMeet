@@ -10,6 +10,7 @@ import 'package:wheretomeet/textstyle.dart';
 import 'package:wheretomeet/locations.dart' as locations;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
+import 'package:location/location.dart';
 
 class SearchPlace extends StatefulWidget {
   const SearchPlace({Key? key}) : super(key: key);
@@ -21,6 +22,7 @@ class SearchPlace extends StatefulWidget {
 class _SearchPlaceState extends State<SearchPlace> {
   String placeText = "";
 
+  //! Google Map
   late GoogleMapController mapController;
 
   final LatLng _center = const LatLng(45.521563, -122.677433);
@@ -53,6 +55,34 @@ class _SearchPlaceState extends State<SearchPlace> {
       _markers["Test"] = marker;
     });
   }
+
+  // //! Fetch My Location Data
+  // Future<LocationData> loadMyLocation() async {
+  //   Location location = new Location();
+
+  //   bool _serviceEnabled;
+  //   PermissionStatus _permissionGranted;
+  //   LocationData _locationData;
+
+  //   _serviceEnabled = await location.serviceEnabled();
+  //   if (!_serviceEnabled) {
+  //     _serviceEnabled = await location.requestService();
+  //     if (!_serviceEnabled) {
+  //       return Future.error('Location services are disabled.');
+  //     }
+  //   }
+
+  //   _permissionGranted = await location.hasPermission();
+  //   if (_permissionGranted == PermissionStatus.denied) {
+  //     _permissionGranted = await location.requestPermission();
+  //     if (_permissionGranted != PermissionStatus.granted) {
+  //       return Future.error('Location permissions are denied');
+  //     }
+  //   }
+
+  //   _locationData = await location.getLocation();
+  //   return _locationData;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +122,7 @@ class _SearchPlaceState extends State<SearchPlace> {
     );
   }
 
-  Row searchHeader(BuildContext context) {
+  Widget searchHeader(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     return Row(
       children: [
@@ -129,6 +159,18 @@ class _SearchPlaceState extends State<SearchPlace> {
           flex: 1,
           fit: FlexFit.tight,
           child: SizedBox(),
+        ),
+        CupertinoButton(
+          alignment: Alignment.center,
+          minSize: 0,
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          child: Icon(
+            Icons.place,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            // print(loadMyLocation());
+          },
         ),
         CupertinoButton(
           alignment: Alignment.centerRight,
