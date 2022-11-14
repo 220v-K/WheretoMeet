@@ -11,7 +11,6 @@ import 'package:wheretomeet/locations.dart' as locations;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:wheretomeet/searchplace.dart';
-import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class SearchPlaceText extends StatefulWidget {
@@ -54,7 +53,7 @@ class _SearchPlaceTextState extends State<SearchPlaceText> {
           padding: EdgeInsets.only(bottom: 3),
           width: width * 0.6,
           child: CupertinoTextField(
-            placeholder: "À§Ä¡¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä",
+            placeholder: "ìœ„ì¹˜ë¥¼ ìž…ë ¥í•´ì£¼ì„¸ìš”",
             placeholderStyle:
                 customTextStyle(16, Colors.black.withOpacity(0.5)),
             style: customTextStyle(16, Colors.black),
@@ -83,7 +82,7 @@ class _SearchPlaceTextState extends State<SearchPlaceText> {
             color: Colors.black,
           ),
           onPressed: () {
-            // TODO : °Ë»ö ±â´É ±¸Çö
+            // TODO : ï¿½Ë»ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             // Navigator.push(
             //   context,
             //   CupertinoPageRoute(builder: (context) => SearchPlaceText()),
