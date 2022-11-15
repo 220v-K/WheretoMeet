@@ -24,6 +24,7 @@ class SearchPlaceText extends StatefulWidget {
 
 class _SearchPlaceTextState extends State<SearchPlaceText> {
   String placeText = "";
+  List<String> placeList = ["가나다", "라마바"];
   @override
   Widget build(BuildContext context) {
     return safeAreaPage(
@@ -32,7 +33,64 @@ class _SearchPlaceTextState extends State<SearchPlaceText> {
       Column(
         children: [
           searchHeader(context),
+          searchInMap(context),
+          Expanded(
+            child: Scrollbar(
+              thickness: 3.0,
+              radius: Radius.circular(8),
+              child: ListView.builder(
+                scrollDirection: Axis.vertical,
+                padding: const EdgeInsets.all(8),
+                shrinkWrap: true,
+                itemCount: placeList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Center(
+                      child: Text(placeList[index], style: blackTextStyle(20)));
+                },
+              ),
+            ),
+          ),
         ],
+      ),
+    );
+  }
+
+  CupertinoButton searchInMap(BuildContext context) {
+    return CupertinoButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          CupertinoPageRoute(builder: (context) => SearchPlaceMap()),
+        );
+      },
+      minSize: 0,
+      padding: EdgeInsets.zero,
+      child: Container(
+        constraints: BoxConstraints(
+          maxWidth: 180,
+        ),
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.black),
+          borderRadius: BorderRadius.circular(30),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 5),
+              child: Text(
+                "지도에서 검색하기",
+                style: blackTextStyle(15),
+              ),
+            ),
+            Icon(
+              CupertinoIcons.arrow_right_square,
+              color: Colors.black,
+              size: 20,
+            ),
+          ],
+        ),
       ),
     );
   }

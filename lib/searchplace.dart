@@ -14,14 +14,14 @@ import 'package:flutter/gestures.dart';
 import 'package:location/location.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 
-class SearchPlace extends StatefulWidget {
-  const SearchPlace({Key? key}) : super(key: key);
+class SearchPlaceMap extends StatefulWidget {
+  const SearchPlaceMap({Key? key}) : super(key: key);
 
   @override
-  State<SearchPlace> createState() => _SearchPlaceState();
+  State<SearchPlaceMap> createState() => _SearchPlaceMapState();
 }
 
-class _SearchPlaceState extends State<SearchPlace> {
+class _SearchPlaceMapState extends State<SearchPlaceMap> {
   String placeText = "";
 
   //! Google Map
@@ -137,26 +137,26 @@ class _SearchPlaceState extends State<SearchPlace> {
             Navigator.pop(context);
           },
         ),
-        Container(
-          alignment: Alignment.topCenter,
-          padding: EdgeInsets.only(bottom: 3),
-          width: width * 0.6,
-          child: CupertinoTextField(
-            placeholder: "위치를 입력해주세요",
-            placeholderStyle:
-                customTextStyle(16, Colors.black.withOpacity(0.5)),
-            style: customTextStyle(16, Colors.black),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            onChanged: (value) {
-              setState(() {
-                placeText = value;
-              });
-            },
-          ),
-        ),
+        // Container(
+        //   alignment: Alignment.topCenter,
+        //   padding: EdgeInsets.only(bottom: 3),
+        //   width: width * 0.6,
+        //   child: CupertinoTextField(
+        //     placeholder: "위치를 입력해주세요",
+        //     placeholderStyle:
+        //         customTextStyle(16, Colors.black.withOpacity(0.5)),
+        //     style: customTextStyle(16, Colors.black),
+        //     decoration: BoxDecoration(
+        //       color: Colors.white,
+        //       borderRadius: BorderRadius.circular(10),
+        //     ),
+        //     onChanged: (value) {
+        //       setState(() {
+        //         placeText = value;
+        //       });
+        //     },
+        //   ),
+        // ),
         Flexible(
           flex: 1,
           fit: FlexFit.tight,
@@ -174,23 +174,22 @@ class _SearchPlaceState extends State<SearchPlace> {
             // print(loadMyLocation());
           },
         ),
-        CupertinoButton(
-          alignment: Alignment.centerRight,
-          minSize: 0,
-          padding: EdgeInsets.zero,
-          child: Icon(
-            Icons.search,
-            color: Colors.black,
-          ),
-          onPressed: () {
-            // TODO : 검색 기능 구현
-            Navigator.push(
-              context,
-              CupertinoPageRoute(builder: (context) => SearchPlaceText()),
-            );
-          },
-        ),
-        SizedBox(width: 15),
+        // CupertinoButton(
+        //   alignment: Alignment.centerRight,
+        //   minSize: 0,
+        //   padding: EdgeInsets.zero,
+        //   child: Icon(
+        //     Icons.search,
+        //     color: Colors.black,
+        //   ),
+        //   onPressed: () {
+        //     Navigator.push(
+        //       context,
+        //       CupertinoPageRoute(builder: (context) => SearchPlaceText()),
+        //     );
+        //   },
+        // ),
+        SizedBox(width: 10),
       ],
     );
   }

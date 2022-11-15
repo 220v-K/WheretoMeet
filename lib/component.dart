@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wheretomeet/colors.dart';
 import 'package:wheretomeet/searchplace.dart';
+import 'package:wheretomeet/searchplaceText.dart';
 import 'package:wheretomeet/textForButton.dart';
 import 'package:wheretomeet/textstyle.dart';
 
@@ -12,7 +13,7 @@ CupertinoButton locationBox(
     onPressed: () {
       Navigator.push(
         context,
-        CupertinoPageRoute(builder: (context) => SearchPlace()),
+        CupertinoPageRoute(builder: (context) => SearchPlaceText()),
       );
     },
     minSize: 0,
