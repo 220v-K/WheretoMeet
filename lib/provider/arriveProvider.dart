@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
-class DepartProvider extends ChangeNotifier {
+class ArriveProvider extends ChangeNotifier {
   List<Map> places = [];
 
-  void setPlace(Map place, int index) {
+  void getPlace(Map place, int index) {
     places[index] = place;
     notifyListeners();
   }

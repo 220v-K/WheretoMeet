@@ -18,23 +18,12 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   late DepartProvider _departProvider;
 
-  List<String> departList = <String>[
-    "홍제역 3호선",
-    "서울역 1호선",
-    "신촌역 2호선",
-  ];
-
   Map place = {
     "name": "",
     "address": "",
     "latitude": 37.557945,
     "longitude": 126.925608,
   };
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,8 +66,8 @@ class _MainPageState extends State<MainPage> {
           shrinkWrap: true,
           itemCount: _departProvider.places.length,
           itemBuilder: (BuildContext context, int index) {
-            return locationBox(
-                width, _departProvider.places[index]["name"], context);
+            return locationBox(width, _departProvider.places[index]["name"],
+                context, index, true);
           },
         ),
       ),

@@ -1,16 +1,22 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:wheretomeet/colors.dart';
+import 'package:wheretomeet/provider/currentIndexProvider.dart';
+import 'package:wheretomeet/provider/departProvider.dart';
 import 'package:wheretomeet/searchplace.dart';
 import 'package:wheretomeet/searchplaceText.dart';
 import 'package:wheretomeet/textForButton.dart';
 import 'package:wheretomeet/textstyle.dart';
 
-CupertinoButton locationBox(
-    double width, String location, BuildContext context) {
+CupertinoButton locationBox(double width, String location, BuildContext context,
+    int index, bool isDepart) {
   return CupertinoButton(
     onPressed: () {
+      print(index);
+      // * set Index of Depart or Arrive
+      Provider.of<CurrentIndexProvider>(context, listen: false).setIndex(index);
       Navigator.push(
         context,
         CupertinoPageRoute(

@@ -7,6 +7,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:wheretomeet/arrivalpage.dart';
 import 'package:wheretomeet/colors.dart';
 import 'package:wheretomeet/component.dart';
+import 'package:wheretomeet/provider/currentIndexProvider.dart';
+import 'package:wheretomeet/provider/departProvider.dart';
+import 'package:provider/provider.dart';
 import 'package:wheretomeet/textForButton.dart';
 import 'package:wheretomeet/textstyle.dart';
 import 'package:wheretomeet/locations.dart' as locations;
@@ -23,11 +26,13 @@ class SearchPlaceText extends StatefulWidget {
 }
 
 class _SearchPlaceTextState extends State<SearchPlaceText> {
+  // late DepartProvider _departProvider;
   String placeText = "";
   List<Map> placesList = [];
   Widget searchResultWidget = Container();
   @override
   Widget build(BuildContext context) {
+    // _departProvider = Provider.of<DepartProvider>(context, listen: false);
     return safeAreaPage(
       Colors.white,
       Colors.white,
@@ -156,7 +161,8 @@ class _SearchPlaceTextState extends State<SearchPlaceText> {
     String url =
         "https://maps.googleapis.com/maps/api/place/textsearch/json?query=";
     String key = dotenv.env['GOOGLE_PLACES_API_2'] ?? "";
-    url += "$placeText_&key=$key";
+    // url += placeText_ + key;
+    url += "$placeText_&language=ko&key=$key";
     var response = await http.get(Uri.parse(url));
     var statusCode = response.statusCode;
     var responseHeaders = response.headers;
@@ -168,16 +174,15 @@ class _SearchPlaceTextState extends State<SearchPlaceText> {
     // print(json["results"][0]["name"]);
     print("responseBody: $responseBody");
 
-    createPlacesWidget(json, searchResultWidget_, placesList_);
+    createPlacesWidget(json, searchResultWidget_, placesList_, context);
   }
 
   void createPlacesWidget(
     json,
     Widget searchResultWidget_,
     List<Map> placesList_,
+    context,
   ) {
-    List<String> placeNameList_ = [];
-
     for (int i = 0; i < json["results"].length; i++) {
       placesList_.add({
         "name": json["results"][i]["name"],
@@ -198,16 +203,27 @@ class _SearchPlaceTextState extends State<SearchPlaceText> {
             shrinkWrap: true,
             itemCount: placesList.length,
             itemBuilder: (BuildContext context, int index) {
-              return CupertinoButton(
-                onPressed: () {
-                  Navigator.pop(context, placesList_[index]);
-                },
-                minSize: 0,
-                padding: EdgeInsets.all(8),
-                child: Center(
-                  child: Text(
-                    placesList_[index]["name"],
-                    style: blackTextStyle(20),
+              return Provider(
+                create: (context) => DepartProvider(),
+                child: CupertinoButton(
+                  onPressed: () {
+                    // Provider에 Place정보 추가하며 화면 전환
+                    Provider.of<DepartProvider>(context, listen: false)
+                        .setPlace(
+                            placesList[index],
+                            Provider.of<CurrentIndexProvider>(context,
+                                    listen: false)
+                                .index);
+
+                    Navigator.pop(context);
+                  },
+                  minSize: 0,
+                  padding: EdgeInsets.all(8),
+                  child: Center(
+                    child: Text(
+                      placesList_[index]["name"],
+                      style: blackTextStyle(20),
+                    ),
                   ),
                 ),
               );
