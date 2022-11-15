@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -82,12 +84,13 @@ class _SearchPlaceTextState extends State<SearchPlaceText> {
             color: Colors.black,
           ),
           onPressed: () {
-            // TODO : �˻� ��� ����
+            // TODO
             // Navigator.push(
             //   context,
             //   CupertinoPageRoute(builder: (context) => SearchPlaceText()),
             // );
             // searchPlace();
+            searchPlace(placeText);
           },
         ),
         SizedBox(width: 15),
@@ -97,17 +100,22 @@ class _SearchPlaceTextState extends State<SearchPlaceText> {
 }
 
 // search place with text input using Google Places API, http get method
-void searchPlace() async {
+void searchPlace(String placeText) async {
+  // String url =
+  //     "https://maps.googleapis.com/maps/api/place/textsearch/json?query=restaurants%20in%20Sydney&key=";
+
   String url =
-      "https://maps.googleapis.com/maps/api/place/textsearch/json?query=restaurants%20in%20Sydney&key=";
-  String key = dotenv.env['GOOGLE_API_KEY']!;
-  url += key;
+      "https://maps.googleapis.com/maps/api/place/textsearch/json?query=";
+  String key = dotenv.env['GOOGLE_PLACES_API_2'] ?? "";
+  url += "$placeText&key=$key";
   var response = await http.get(Uri.parse(url));
   var statusCode = response.statusCode;
   var responseHeaders = response.headers;
   var responseBody = response.body;
 
-  print("statusCode: $statusCode");
-  print("responseHeaders: $responseHeaders");
-  print("responseBody: $responseBody");
+  // print("statusCode: $statusCode");
+  // print("responseHeaders: $responseHeaders");
+  var json = jsonDecode(responseBody);
+  print(json["results"][0]["name"]);
+  // print("responseBody: $responseBody");
 }
