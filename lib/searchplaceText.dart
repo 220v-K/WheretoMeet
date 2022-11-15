@@ -24,7 +24,8 @@ class SearchPlaceText extends StatefulWidget {
 
 class _SearchPlaceTextState extends State<SearchPlaceText> {
   String placeText = "";
-  List<String> placeList = ["가나다", "라마바"];
+  List<Map> placesList = [];
+  Widget searchResultWidget = Container();
   @override
   Widget build(BuildContext context) {
     return safeAreaPage(
@@ -34,22 +35,7 @@ class _SearchPlaceTextState extends State<SearchPlaceText> {
         children: [
           searchHeader(context),
           searchInMap(context),
-          Expanded(
-            child: Scrollbar(
-              thickness: 3.0,
-              radius: Radius.circular(8),
-              child: ListView.builder(
-                scrollDirection: Axis.vertical,
-                padding: const EdgeInsets.all(8),
-                shrinkWrap: true,
-                itemCount: placeList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Center(
-                      child: Text(placeList[index], style: blackTextStyle(20)));
-                },
-              ),
-            ),
-          ),
+          searchResultWidget,
         ],
       ),
     );
@@ -148,32 +134,106 @@ class _SearchPlaceTextState extends State<SearchPlaceText> {
             //   CupertinoPageRoute(builder: (context) => SearchPlaceText()),
             // );
             // searchPlace();
-            searchPlace(placeText);
+            searchPlace(placeText, searchResultWidget, placesList);
           },
         ),
         SizedBox(width: 15),
       ],
     );
   }
-}
 
-// search place with text input using Google Places API, http get method
-void searchPlace(String placeText) async {
-  // String url =
-  //     "https://maps.googleapis.com/maps/api/place/textsearch/json?query=restaurants%20in%20Sydney&key=";
+  // search place with text input using Google Places API, http get method
+  void searchPlace(
+    String placeText_,
+    Widget searchResultWidget_,
+    List<Map> placesList_,
+  ) async {
+    //
+    placesList_.clear();
+    // String url =
+    //     "https://maps.googleapis.com/maps/api/place/textsearch/json?query=restaurants%20in%20Sydney&key=";
 
-  String url =
-      "https://maps.googleapis.com/maps/api/place/textsearch/json?query=";
-  String key = dotenv.env['GOOGLE_PLACES_API_2'] ?? "";
-  url += "$placeText&key=$key";
-  var response = await http.get(Uri.parse(url));
-  var statusCode = response.statusCode;
-  var responseHeaders = response.headers;
-  var responseBody = response.body;
+    String url =
+        "https://maps.googleapis.com/maps/api/place/textsearch/json?query=";
+    String key = dotenv.env['GOOGLE_PLACES_API_2'] ?? "";
+    url += "$placeText_&key=$key";
+    var response = await http.get(Uri.parse(url));
+    var statusCode = response.statusCode;
+    var responseHeaders = response.headers;
+    var responseBody = response.body;
 
-  // print("statusCode: $statusCode");
-  // print("responseHeaders: $responseHeaders");
-  var json = jsonDecode(responseBody);
-  print(json["results"][0]["name"]);
-  // print("responseBody: $responseBody");
+    // print("statusCode: $statusCode");
+    // print("responseHeaders: $responseHeaders");
+    var json = jsonDecode(responseBody);
+    // print(json["results"][0]["name"]);
+    print("responseBody: $responseBody");
+
+    createPlacesWidget(json, searchResultWidget_, placesList_);
+  }
+
+  void createPlacesWidget(
+    json,
+    Widget searchResultWidget_,
+    List<Map> placesList_,
+  ) {
+    List<String> placeNameList_ = [];
+
+    for (int i = 0; i < json["results"].length; i++) {
+      placesList_.add({
+        "name": json["results"][i]["name"],
+        "address": json["results"][i]["formatted_address"],
+        "lat": json["results"][i]["geometry"]["location"]["lat"],
+        "lng": json["results"][i]["geometry"]["location"]["lng"],
+      });
+    }
+    //* NULL CHECK - if there is no result
+    if ((json["results"].length != 0 && json["status"] != "INVALID_REQUEST")) {
+      searchResultWidget_ = Expanded(
+        child: Scrollbar(
+          thickness: 3.0,
+          radius: Radius.circular(8),
+          child: ListView.builder(
+            scrollDirection: Axis.vertical,
+            padding: const EdgeInsets.all(8),
+            shrinkWrap: true,
+            itemCount: placesList.length,
+            itemBuilder: (BuildContext context, int index) {
+              return CupertinoButton(
+                onPressed: () {
+                  Navigator.pop(context, placesList_[index]);
+                },
+                minSize: 0,
+                padding: EdgeInsets.all(8),
+                child: Center(
+                  child: Text(
+                    placesList_[index]["name"],
+                    style: blackTextStyle(20),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      );
+    } else {
+      searchResultWidget_ = RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          style: blackTextStyle(20),
+          children: const [
+            TextSpan(
+              text: "검색 결과가 없거나,\n",
+            ),
+            TextSpan(
+              text: "정보를 불러오는데 실패했습니다.",
+            ),
+          ],
+        ),
+      );
+    }
+
+    setState(() {
+      searchResultWidget = searchResultWidget_;
+    });
+  }
 }

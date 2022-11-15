@@ -18,6 +18,7 @@ class _ArrivalPageState extends State<ArrivalPage> {
     "을지로3가역 3호선",
     "동대문역사문화공원역 4호선",
   ];
+  Map place = {};
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +69,7 @@ class _ArrivalPageState extends State<ArrivalPage> {
           shrinkWrap: true,
           itemCount: arriveList.length,
           itemBuilder: (BuildContext context, int index) {
-            return locationBox(width, arriveList[index], context);
+            return locationBox(width, arriveList[index], context, place);
           },
         ),
       ),

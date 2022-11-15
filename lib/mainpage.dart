@@ -20,6 +20,13 @@ class _MainPageState extends State<MainPage> {
     "신촌역 2호선",
   ];
 
+  Map place = {
+    "name": "홍대입구역",
+    "address": "서울특별시 마포구 양화로 32",
+    "latitude": 37.557945,
+    "longitude": 126.925608,
+  };
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -60,7 +67,7 @@ class _MainPageState extends State<MainPage> {
           shrinkWrap: true,
           itemCount: departList.length,
           itemBuilder: (BuildContext context, int index) {
-            return locationBox(width, departList[index], context);
+            return locationBox(width, departList[index], context, place);
           },
         ),
       ),
