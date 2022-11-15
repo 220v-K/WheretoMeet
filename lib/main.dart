@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:wheretomeet/colors.dart';
 import 'package:wheretomeet/component.dart';
 import 'package:wheretomeet/mainpage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
+import 'package:wheretomeet/provider/departProvider.dart';
 
 void main() async {
   await dotenv.load(fileName: 'assets/.env');
@@ -26,7 +29,12 @@ class MyApp extends StatelessWidget {
         ),
       ),
       title: _title,
-      home: MainPage(),
+      home: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (context) => DepartProvider()),
+        ],
+        child: const MainPage(),
+      ),
     );
   }
 }

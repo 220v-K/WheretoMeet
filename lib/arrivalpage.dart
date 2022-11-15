@@ -69,7 +69,7 @@ class _ArrivalPageState extends State<ArrivalPage> {
           shrinkWrap: true,
           itemCount: arriveList.length,
           itemBuilder: (BuildContext context, int index) {
-            return locationBox(width, arriveList[index], context, place);
+            return locationBox(width, arriveList[index], context);
           },
         ),
       ),

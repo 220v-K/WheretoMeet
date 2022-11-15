@@ -8,16 +8,16 @@ import 'package:wheretomeet/textForButton.dart';
 import 'package:wheretomeet/textstyle.dart';
 
 CupertinoButton locationBox(
-    double width, String location, BuildContext context, Map place) {
+    double width, String location, BuildContext context) {
   return CupertinoButton(
     onPressed: () {
-      // Navigator.push(
-      //   context,
-      //   CupertinoPageRoute(
-      //     builder: (context) => SearchPlaceText(),
-      //   ),
-      // );
-      fetchPlace(context, place);
+      Navigator.push(
+        context,
+        CupertinoPageRoute(
+          builder: (context) => SearchPlaceText(),
+        ),
+      );
+      // fetchPlace(context, place);
     },
     minSize: 0,
     padding: EdgeInsets.symmetric(vertical: 5),
@@ -37,16 +37,16 @@ CupertinoButton locationBox(
   );
 }
 
-void fetchPlace(BuildContext context, Map place) async {
-  Map result = await Navigator.push(
-    context,
-    CupertinoPageRoute(
-      builder: (context) => SearchPlaceText(),
-    ),
-  );
-  print(result);
-  place = result;
-}
+// void fetchPlace(BuildContext context, Map place) async {
+//   Map result = await Navigator.push(
+//     context,
+//     CupertinoPageRoute(
+//       builder: (context) => SearchPlaceText(),
+//     ),
+//   );
+//   print(result);
+//   place = result;
+// }
 
 /// [backgroundColor] is Color of outside of SafeArea.
 ///

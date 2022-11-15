@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:wheretomeet/arrivalpage.dart';
 import 'package:wheretomeet/colors.dart';
 import 'package:wheretomeet/component.dart';
+import 'package:wheretomeet/provider/departProvider.dart';
 import 'package:wheretomeet/textForButton.dart';
 import 'package:wheretomeet/textstyle.dart';
 
@@ -14,6 +16,8 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  late DepartProvider _departProvider;
+
   List<String> departList = <String>[
     "홍제역 3호선",
     "서울역 1호선",
@@ -21,14 +25,20 @@ class _MainPageState extends State<MainPage> {
   ];
 
   Map place = {
-    "name": "홍대입구역",
-    "address": "서울특별시 마포구 양화로 32",
+    "name": "",
+    "address": "",
     "latitude": 37.557945,
     "longitude": 126.925608,
   };
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    _departProvider = Provider.of<DepartProvider>(context, listen: false);
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return safeAreaPage(
@@ -65,9 +75,10 @@ class _MainPageState extends State<MainPage> {
           scrollDirection: Axis.vertical,
           padding: const EdgeInsets.all(8),
           shrinkWrap: true,
-          itemCount: departList.length,
+          itemCount: _departProvider.places.length,
           itemBuilder: (BuildContext context, int index) {
-            return locationBox(width, departList[index], context, place);
+            return locationBox(
+                width, _departProvider.places[index]["name"], context);
           },
         ),
       ),
@@ -85,8 +96,8 @@ class _MainPageState extends State<MainPage> {
       ),
       onPressed: () {
         setState(() {
-          if (departList.length < 10) {
-            departList.add("더미데이터");
+          if (_departProvider.places.length < 10) {
+            _departProvider.addPlace(place);
           } else {
             alertPopup(context, "최대 10개까지\n추가할 수 있습니다.");
           }
