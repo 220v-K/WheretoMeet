@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:wheretomeet/colors.dart';
+import 'package:wheretomeet/components/colors.dart';
 
 const TextStyle defaultTextStyle = TextStyle(
   fontFamily: 'GmarketSans',

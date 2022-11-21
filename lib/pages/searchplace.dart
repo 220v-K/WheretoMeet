@@ -2,11 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:wheretomeet/arrivalpage.dart';
-import 'package:wheretomeet/colors.dart';
-import 'package:wheretomeet/component.dart';
-import 'package:wheretomeet/searchplaceText.dart';
-import 'package:wheretomeet/textForButton.dart';
-import 'package:wheretomeet/textstyle.dart';
+import 'package:wheretomeet/components/component.dart';
+
 import 'package:wheretomeet/locations.dart' as locations;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';

@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wheretomeet/colors.dart';
-import 'package:wheretomeet/component.dart';
+import 'package:wheretomeet/components/colors.dart';
+import 'package:wheretomeet/components/component.dart';
+import 'package:wheretomeet/components/textForButton.dart';
+import 'package:wheretomeet/components/textstyle.dart';
 import 'package:wheretomeet/provider/arriveProvider.dart';
 import 'package:wheretomeet/provider/departProvider.dart';
-import 'package:wheretomeet/textForButton.dart';
-import 'package:wheretomeet/textstyle.dart';
 
 class ArrivalPage extends StatefulWidget {
   const ArrivalPage({Key? key}) : super(key: key);
@@ -54,7 +54,7 @@ class _ArrivalPageState extends State<ArrivalPage> {
                 Navigator.pop(context);
               }),
               colorButtonText(
-                  "다음", Colors.blue.withOpacity(0.7), whiteTextStyle(20), () {
+                  "검색", Colors.blue.withOpacity(0.7), whiteTextStyle(20), () {
                 Navigator.push(
                   context,
                   CupertinoPageRoute(builder: (context) => ArrivalPage()),

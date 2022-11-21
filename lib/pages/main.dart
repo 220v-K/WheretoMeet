@@ -2,8 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wheretomeet/arrivalpage.dart';
-import 'package:wheretomeet/colors.dart';
-import 'package:wheretomeet/component.dart';
+
 import 'package:wheretomeet/mainpage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
