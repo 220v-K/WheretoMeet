@@ -5,7 +5,6 @@ import 'package:wheretomeet/arrivalpage.dart';
 import 'package:wheretomeet/colors.dart';
 import 'package:wheretomeet/component.dart';
 import 'package:wheretomeet/searchplaceText.dart';
-import 'package:wheretomeet/searchplaces.dart';
 import 'package:wheretomeet/textForButton.dart';
 import 'package:wheretomeet/textstyle.dart';
 import 'package:wheretomeet/locations.dart' as locations;
