@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 class ArriveProvider extends ChangeNotifier {
   List<Map> places = [];
 
-  void getPlace(Map place, int index) {
+  void setPlace(Map place, int index) {
     places[index] = place;
     notifyListeners();
   }

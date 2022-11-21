@@ -25,6 +25,10 @@ class _MainPageState extends State<MainPage> {
     "longitude": 126.925608,
   };
 
+  void update() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     _departProvider = Provider.of<DepartProvider>(context, listen: false);
@@ -67,7 +71,7 @@ class _MainPageState extends State<MainPage> {
           itemCount: _departProvider.places.length,
           itemBuilder: (BuildContext context, int index) {
             return locationBox(width, _departProvider.places[index]["name"],
-                context, index, true);
+                context, index, true, update);
           },
         ),
       ),

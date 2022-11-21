@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:wheretomeet/colors.dart';
 import 'package:wheretomeet/component.dart';
+import 'package:wheretomeet/provider/arriveProvider.dart';
+import 'package:wheretomeet/provider/departProvider.dart';
 import 'package:wheretomeet/textForButton.dart';
 import 'package:wheretomeet/textstyle.dart';
 
@@ -13,15 +16,22 @@ class ArrivalPage extends StatefulWidget {
 }
 
 class _ArrivalPageState extends State<ArrivalPage> {
-  List<String> arriveList = <String>[
-    "충무로역 2호선",
-    "을지로3가역 3호선",
-    "동대문역사문화공원역 4호선",
-  ];
-  Map place = {};
+  late ArriveProvider _arriveProvider;
+
+  Map place = {
+    "name": "",
+    "address": "",
+    "latitude": 37.557945,
+    "longitude": 126.925608,
+  };
+
+  void update() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
+    _arriveProvider = Provider.of<ArriveProvider>(context, listen: false);
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return safeAreaPage(
@@ -59,6 +69,7 @@ class _ArrivalPageState extends State<ArrivalPage> {
   }
 
   Widget arriveListView(double width, double height) {
+    List arrivePlacesList = _arriveProvider.places;
     return Expanded(
       child: Scrollbar(
         thickness: 3.0,
@@ -67,9 +78,10 @@ class _ArrivalPageState extends State<ArrivalPage> {
           scrollDirection: Axis.vertical,
           padding: const EdgeInsets.all(8),
           shrinkWrap: true,
-          itemCount: arriveList.length,
+          itemCount: _arriveProvider.places.length,
           itemBuilder: (BuildContext context, int index) {
-            return locationBox(width, arriveList[index], context, index, false);
+            return locationBox(width, _arriveProvider.places[index]["name"],
+                context, index, false, update);
           },
         ),
       ),
@@ -87,8 +99,8 @@ class _ArrivalPageState extends State<ArrivalPage> {
       ),
       onPressed: () {
         setState(() {
-          if (arriveList.length < 10) {
-            arriveList.add("더미데이터");
+          if (_arriveProvider.places.length < 10) {
+            _arriveProvider.addPlace(place);
           } else {
             alertPopup(context, "최대 10개까지\n추가할 수 있습니다.");
           }

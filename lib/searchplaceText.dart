@@ -7,6 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:wheretomeet/arrivalpage.dart';
 import 'package:wheretomeet/colors.dart';
 import 'package:wheretomeet/component.dart';
+import 'package:wheretomeet/provider/arriveProvider.dart';
 import 'package:wheretomeet/provider/currentIndexProvider.dart';
 import 'package:wheretomeet/provider/departProvider.dart';
 import 'package:provider/provider.dart';
@@ -19,7 +20,14 @@ import 'package:wheretomeet/searchplace.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class SearchPlaceText extends StatefulWidget {
-  const SearchPlaceText({Key? key}) : super(key: key);
+  const SearchPlaceText({
+    Key? key,
+    required this.isDepart,
+    required this.update,
+  }) : super(key: key);
+
+  final bool isDepart;
+  final Function update;
 
   @override
   State<SearchPlaceText> createState() => _SearchPlaceTextState();
@@ -30,6 +38,7 @@ class _SearchPlaceTextState extends State<SearchPlaceText> {
   String placeText = "";
   List<Map> placesList = [];
   Widget searchResultWidget = Container();
+
   @override
   Widget build(BuildContext context) {
     // _departProvider = Provider.of<DepartProvider>(context, listen: false);
@@ -183,6 +192,9 @@ class _SearchPlaceTextState extends State<SearchPlaceText> {
     List<Map> placesList_,
     context,
   ) {
+    // Update the state of Last Page
+    Function updateLastPage = widget.update;
+
     for (int i = 0; i < json["results"].length; i++) {
       placesList_.add({
         "name": json["results"][i]["name"],
@@ -208,13 +220,22 @@ class _SearchPlaceTextState extends State<SearchPlaceText> {
                 child: CupertinoButton(
                   onPressed: () {
                     // Provider에 Place정보 추가하며 화면 전환
-                    Provider.of<DepartProvider>(context, listen: false)
-                        .setPlace(
-                            placesList[index],
-                            Provider.of<CurrentIndexProvider>(context,
-                                    listen: false)
-                                .index);
-
+                    if (widget.isDepart) {
+                      Provider.of<DepartProvider>(context, listen: false)
+                          .setPlace(
+                              placesList[index],
+                              Provider.of<CurrentIndexProvider>(context,
+                                      listen: false)
+                                  .index);
+                    } else {
+                      Provider.of<ArriveProvider>(context, listen: false)
+                          .setPlace(
+                              placesList[index],
+                              Provider.of<CurrentIndexProvider>(context,
+                                      listen: false)
+                                  .index);
+                    }
+                    updateLastPage();
                     Navigator.pop(context);
                   },
                   minSize: 0,

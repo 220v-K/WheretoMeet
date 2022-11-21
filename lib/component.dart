@@ -11,7 +11,7 @@ import 'package:wheretomeet/textForButton.dart';
 import 'package:wheretomeet/textstyle.dart';
 
 CupertinoButton locationBox(double width, String location, BuildContext context,
-    int index, bool isDepart) {
+    int index, bool isDepart, Function update) {
   return CupertinoButton(
     onPressed: () {
       print(index);
@@ -20,7 +20,8 @@ CupertinoButton locationBox(double width, String location, BuildContext context,
       Navigator.push(
         context,
         CupertinoPageRoute(
-          builder: (context) => SearchPlaceText(),
+          builder: (context) =>
+              SearchPlaceText(isDepart: isDepart, update: update),
         ),
       );
       // fetchPlace(context, place);
