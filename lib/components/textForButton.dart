@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:wheretomeet/colors.dart';
-import 'package:wheretomeet/textstyle.dart';
+import 'package:wheretomeet/components/colors.dart';
+import 'package:wheretomeet/components/textstyle.dart';
 
 Widget alertButtonOk(String content, BuildContext context) {
   // TODO : Change Onpressed Func

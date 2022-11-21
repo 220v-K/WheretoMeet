@@ -5,10 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:wheretomeet/components/colors.dart';
 import 'package:wheretomeet/components/textForButton.dart';
 import 'package:wheretomeet/components/textstyle.dart';
+import 'package:wheretomeet/pages/searchplaceText.dart';
 import 'package:wheretomeet/provider/currentIndexProvider.dart';
 import 'package:wheretomeet/provider/departProvider.dart';
-import 'package:wheretomeet/searchplace.dart';
-import 'package:wheretomeet/searchplaceText.dart';
 
 CupertinoButton locationBox(double width, String location, BuildContext context,
     int index, bool isDepart, Function update) {

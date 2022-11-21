@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wheretomeet/arrivalpage.dart';
 
 import 'package:wheretomeet/components/colors.dart';
 import 'package:wheretomeet/components/component.dart';
+import 'package:wheretomeet/components/textForButton.dart';
+import 'package:wheretomeet/components/textstyle.dart';
+import 'package:wheretomeet/pages/arrivalpage.dart';
 import 'package:wheretomeet/provider/departProvider.dart';
-import 'package:wheretomeet/textForButton.dart';
-import 'package:wheretomeet/textstyle.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
