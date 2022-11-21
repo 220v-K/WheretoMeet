@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -16,6 +18,7 @@ import 'package:location/location.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:wheretomeet/provider/arriveProvider.dart';
 import 'package:wheretomeet/provider/departProvider.dart';
+import 'package:wheretomeet/provider/resultProvider.dart';
 
 class ResultPage extends StatefulWidget {
   const ResultPage({super.key});
@@ -27,14 +30,18 @@ class ResultPage extends StatefulWidget {
 class _ResultPageState extends State<ResultPage> {
   late DepartProvider _departProvider;
   late ArriveProvider _arriveProvider;
+  late ResultProvider _resultProvider;
 
   List<Map> departPlacesList = [];
   List<Map> arrivePlacesList = [];
+
+  int computeMode = 0;
 
   @override
   Widget build(BuildContext context) {
     _departProvider = Provider.of<DepartProvider>(context, listen: false);
     _arriveProvider = Provider.of<ArriveProvider>(context, listen: false);
+    _resultProvider = Provider.of<ResultProvider>(context, listen: false);
 
     departPlacesList = _departProvider.places;
     arrivePlacesList = _arriveProvider.places;
@@ -65,22 +72,35 @@ class _ResultPageState extends State<ResultPage> {
     );
   }
 
-  void recommendPlace() {
+  void recommendPlace() async {
+    // Result Provider 초기화
+    _resultProvider.clearRoutes();
+    int arriveIndex = -1;
+    int departIndex = -1;
+
     for (Map arrive in arrivePlacesList) {
+      departIndex = -1;
+      arriveIndex++;
       if (arrive["name"] == "") {
         continue;
       }
+      // provider - arrive add
+      _resultProvider.addArrive();
       for (Map depart in departPlacesList) {
+        departIndex++;
         if (depart["name"] == "") {
           continue;
         }
         // depart에서 arrive까지 걸리는 시간 측정
-        computeTime(depart, arrive);
+        bool isFin =
+            await computeTime(depart, arrive, arriveIndex, departIndex);
+        if (isFin) computeRecommend(computeMode);
       }
     }
   }
 
-  void computeTime(Map depart, Map arrive) async {
+  Future<bool> computeTime(
+      Map depart, Map arrive, int arriveIndex, int departIndex) async {
     double arriveLat = arrive["lat"];
     double arriveLng = arrive["lng"];
     double departLat = depart["lat"];
@@ -101,9 +121,39 @@ class _ResultPageState extends State<ResultPage> {
     var responseBody = response.body;
 
     print(responseBody);
+    var routeData = jsonDecode(responseBody);
 
-    addRoute();
+    addRoute(routeData, arriveIndex, departIndex);
+
+    return true;
   }
 
-  void addRoute() {}
+  void addRoute(routeData, int arriveIndex, int departIndex) {
+    var routes = routeData["routes"];
+
+    // provider - route add (제일 추천되는 경로만)
+    _resultProvider.addDepart(routes[0], arriveIndex);
+
+    var legs = routes[0]["legs"];
+    var duration = legs[0]["duration"];
+    var durationText = duration["text"];
+    var durationValue = duration["value"];
+
+    print(durationText);
+    print(durationValue);
+  }
+
+  void computeRecommend(int mode) {
+    List timeList = [];
+    for (var arrive in _resultProvider.routes) {
+      for (var depart in arrive) {
+        var legs = depart["legs"];
+        var duration = legs[0]["duration"];
+        var durationValue = duration["value"];
+        timeList.add(durationValue);
+      }
+    }
+
+    if (mode == 0) {}
+  }
 }

@@ -8,6 +8,7 @@ import 'package:wheretomeet/pages/mainpage.dart';
 import 'package:wheretomeet/provider/arriveProvider.dart';
 import 'package:wheretomeet/provider/currentIndexProvider.dart';
 import 'package:wheretomeet/provider/departProvider.dart';
+import 'package:wheretomeet/provider/resultProvider.dart';
 
 void main() async {
   await dotenv.load(fileName: 'assets/.env');
@@ -16,6 +17,7 @@ void main() async {
       ChangeNotifierProvider(create: (context) => DepartProvider()),
       ChangeNotifierProvider(create: (context) => ArriveProvider()),
       ChangeNotifierProvider(create: (context) => CurrentIndexProvider()),
+      ChangeNotifierProvider(create: (context) => ResultProvider()),
     ],
     child: const MyApp(),
   ));
