@@ -67,7 +67,13 @@ class _ResultPageState extends State<ResultPage> {
 
   void recommendPlace() {
     for (Map arrive in arrivePlacesList) {
+      if (arrive["name"] == "") {
+        continue;
+      }
       for (Map depart in departPlacesList) {
+        if (depart["name"] == "") {
+          continue;
+        }
         // depart에서 arrive까지 걸리는 시간 측정
         computeTime(depart, arrive);
       }
@@ -84,15 +90,20 @@ class _ResultPageState extends State<ResultPage> {
     String departLocation = "origin=$departLat,$departLng";
     String arriveLocation = "destination=$arriveLat,$arriveLng";
     String language = "language=ko";
-    String key = dotenv.env['GOOGLE_PLACES_API_2'] ?? "";
+    String key = dotenv.env['GOOGLE_DIRECTIONS_API'] ?? "";
+    key = "key=$key";
     String mode = "mode=transit";
 
-    url += "$departLocation&$arriveLocation&$language&$mode&$key";
+    url += "$language&$departLocation&$arriveLocation&$mode&$key";
     var response = await http.get(Uri.parse(url));
     var statusCode = response.statusCode;
     var responseHeaders = response.headers;
     var responseBody = response.body;
 
     print(responseBody);
+
+    addRoute();
   }
+
+  void addRoute() {}
 }
