@@ -177,13 +177,14 @@ Widget grayButtonText(String content) {
 /// [content] is Text in the button.
 /// Use This as gray color button with text.
 Widget colorButtonText(String content, Color backgroundColor,
-    TextStyle textStyle, VoidCallback callbackFunc) {
+    TextStyle textStyle, VoidCallback callbackFunc,
+    [double width = 120]) {
   return CupertinoButton(
     onPressed: callbackFunc,
     minSize: 0,
     padding: EdgeInsets.all(0),
     child: Container(
-      width: 120,
+      width: width,
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(15),

@@ -57,6 +57,43 @@ class _ResultPageState extends State<ResultPage> {
       Column(
         children: [
           SizedBox(height: 20),
+          Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  colorButtonText(
+                    "모두에게 제일 가까운 곳!",
+                    (computeMode == 0)
+                        ? mainColor.withOpacity(0.7)
+                        : Colors.grey,
+                    whiteTextStyle_Bold(13),
+                    () {
+                      isStartSearch = false;
+                      computeMode = 0;
+                      setState(() {});
+                    },
+                    180,
+                  ),
+                  colorButtonText(
+                    "모두에게 공평하게 가까운 곳!",
+                    (computeMode == 1)
+                        ? mainColor.withOpacity(0.7)
+                        : Colors.grey,
+                    whiteTextStyle_Bold(13),
+                    () {
+                      isStartSearch = false;
+                      computeMode = 1;
+                      setState(() {});
+                    },
+                    180,
+                  ),
+                ],
+              ),
+              Row(),
+            ],
+          ),
+          SizedBox(height: 20),
           colorButtonText(
               "검색", Colors.blue.withOpacity(0.7), whiteTextStyle(20), () {
             setState(() {
@@ -110,7 +147,7 @@ class _ResultPageState extends State<ResultPage> {
     }
   }
 
-  Expanded recommendListView(List<int> recommendIndexList) {
+  Widget recommendListView(List<int> recommendIndexList) {
     return Expanded(
       child: Column(
         children: [
