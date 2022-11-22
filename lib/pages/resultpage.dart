@@ -1,4 +1,6 @@
+import 'dart:collection';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +38,7 @@ class _ResultPageState extends State<ResultPage> {
   List<Map> arrivePlacesList = [];
 
   int computeMode = 0;
+  List<int> recommendedArriveIndexList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -72,11 +75,12 @@ class _ResultPageState extends State<ResultPage> {
     );
   }
 
-  void recommendPlace() async {
+  Future<List<int>> recommendPlace() async {
     // Result Provider 초기화
     _resultProvider.clearRoutes();
     int arriveIndex = -1;
     int departIndex = -1;
+    bool isFin = false;
 
     for (Map arrive in arrivePlacesList) {
       departIndex = -1;
@@ -94,9 +98,11 @@ class _ResultPageState extends State<ResultPage> {
         // depart에서 arrive까지 걸리는 시간 측정
         bool isFin =
             await computeTime(depart, arrive, arriveIndex, departIndex);
-        if (isFin) computeRecommend(computeMode);
       }
     }
+    recommendedArriveIndexList = computeRecommend(computeMode);
+
+    return recommendedArriveIndexList;
   }
 
   Future<bool> computeTime(
@@ -120,7 +126,7 @@ class _ResultPageState extends State<ResultPage> {
     var responseHeaders = response.headers;
     var responseBody = response.body;
 
-    print(responseBody);
+    // print(responseBody);
     var routeData = jsonDecode(responseBody);
 
     addRoute(routeData, arriveIndex, departIndex);
@@ -143,17 +149,44 @@ class _ResultPageState extends State<ResultPage> {
     print(durationValue);
   }
 
-  void computeRecommend(int mode) {
-    List timeList = [];
+  List<int> computeRecommend(int mode) {
+    Map<int, List<int>> timeList = {};
+    int i = 0;
+    // Map에 key: arriveIndex, value: time List 형태로 저장
     for (var arrive in _resultProvider.routes) {
+      List<int> arriveList = [];
       for (var depart in arrive) {
         var legs = depart["legs"];
         var duration = legs[0]["duration"];
         var durationValue = duration["value"];
-        timeList.add(durationValue);
+        arriveList.add(durationValue);
       }
+      timeList.addAll({i++: arriveList});
     }
 
-    if (mode == 0) {}
+    Map<int, int> sortedTimeList = {};
+    // mode 0 => 걸리는 시간의 합이 최소
+    if (mode == 0) {
+      print(timeList);
+      // timeList의 value를 합산하여 새로운 Map<int, int> 생성
+      timeList.forEach((key, value) {
+        int sum = 0;
+        for (int time in value) {
+          sum += time;
+        }
+        sortedTimeList.addAll({key: sum});
+      });
+      // sort Map by value
+      sortedTimeList = SplayTreeMap.from(
+        sortedTimeList,
+        ((key1, key2) =>
+            sortedTimeList[key1]!.compareTo(sortedTimeList[key2]!)),
+      );
+      print(sortedTimeList);
+    }
+    // mode 1 => 걸리는 시간의 편차의 비율의 합이 최소
+    else if (mode == 1) {}
+
+    return sortedTimeList.keys.toList();
   }
 }
