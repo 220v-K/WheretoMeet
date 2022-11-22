@@ -60,9 +60,12 @@ class _ResultPageState extends State<ResultPage> {
           colorButtonText(
               "검색", Colors.blue.withOpacity(0.7), whiteTextStyle(20), () {
             setState(() {
+              // Result Provider 초기화
+              _resultProvider.clearRoutes();
               isStartSearch = true;
             });
           }),
+          SizedBox(height: 20),
           recommendWidget(),
           Expanded(child: SizedBox()),
           Row(
@@ -88,35 +91,61 @@ class _ResultPageState extends State<ResultPage> {
           if (snapshot.hasData == false) {
             return CircularProgressIndicator();
           } else if (snapshot.hasError) {
-            return Container(
-              child: Text(
-                "Error",
-                style: blackTextStyle(20),
-              ),
+            return Text(
+              "Error",
+              style: blackTextStyle(20),
             );
           } else {
-            return Container(
-              child: Text(
-                snapshot.data.toString(),
-                style: blackTextStyle(20),
-              ),
-            );
+            List<int> recommendIndexList = snapshot.data as List<int>;
+
+            return recommendListView(recommendIndexList);
           }
         },
       );
     } else {
-      return Container(
-        child: Text(
-          "검색을 눌러주세요",
-          style: blackTextStyle(20),
-        ),
+      return Text(
+        "검색을 눌러주세요",
+        style: blackTextStyle(20),
       );
     }
   }
 
+  Expanded recommendListView(List<int> recommendIndexList) {
+    return Expanded(
+      child: Column(
+        children: [
+          Text(
+            "추천 기준에 따라 순서대로 장소를 추천합니다.",
+            style: blackTextStyle(20),
+          ),
+          Expanded(
+            child: Scrollbar(
+              thickness: 3.0,
+              radius: Radius.circular(8),
+              child: ListView.builder(
+                scrollDirection: Axis.vertical,
+                padding: const EdgeInsets.all(8),
+                shrinkWrap: true,
+                itemCount: recommendIndexList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return recommendListBox(index, recommendIndexList);
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Text recommendListBox(int index, List<int> recommendIndexList) {
+    return Text(
+      "${index + 1}번째 장소: ${arrivePlacesList[recommendIndexList[index]]['name']}",
+      style: blackTextStyle(20),
+    );
+  }
+
   Future<List<int>> recommendPlace() async {
-    // Result Provider 초기화
-    _resultProvider.clearRoutes();
     int arriveIndex = -1;
     int departIndex = -1;
     bool isFin = false;
