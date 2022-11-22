@@ -40,6 +40,8 @@ class _ResultPageState extends State<ResultPage> {
   int computeMode = 0;
   List<int> recommendedArriveIndexList = [];
 
+  bool isStartSearch = false;
+
   @override
   Widget build(BuildContext context) {
     _departProvider = Provider.of<DepartProvider>(context, listen: false);
@@ -57,8 +59,11 @@ class _ResultPageState extends State<ResultPage> {
           SizedBox(height: 20),
           colorButtonText(
               "검색", Colors.blue.withOpacity(0.7), whiteTextStyle(20), () {
-            recommendPlace();
+            setState(() {
+              isStartSearch = true;
+            });
           }),
+          recommendWidget(),
           Expanded(child: SizedBox()),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -73,6 +78,40 @@ class _ResultPageState extends State<ResultPage> {
         ],
       ),
     );
+  }
+
+  Widget recommendWidget() {
+    if (isStartSearch) {
+      return FutureBuilder(
+        future: recommendPlace(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData == false) {
+            return CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Container(
+              child: Text(
+                "Error",
+                style: blackTextStyle(20),
+              ),
+            );
+          } else {
+            return Container(
+              child: Text(
+                snapshot.data.toString(),
+                style: blackTextStyle(20),
+              ),
+            );
+          }
+        },
+      );
+    } else {
+      return Container(
+        child: Text(
+          "검색을 눌러주세요",
+          style: blackTextStyle(20),
+        ),
+      );
+    }
   }
 
   Future<List<int>> recommendPlace() async {
