@@ -39,8 +39,10 @@ class _ResultPageState extends State<ResultPage> {
 
   int computeMode = 0;
   List<int> recommendedArriveIndexList = [];
+  List<int> recommendIndexList = [];
 
   bool isStartSearch = false;
+  bool isSearchFinished = false;
 
   @override
   Widget build(BuildContext context) {
@@ -73,10 +75,10 @@ class _ResultPageState extends State<ResultPage> {
                       computeMode = 0;
                       setState(() {});
                     },
-                    180,
+                    width: 180,
                   ),
                   colorButtonText(
-                    "모두에게 공평하게 가까운 곳!",
+                    "모두에게 공평한 거리!",
                     (computeMode == 1)
                         ? mainColor.withOpacity(0.7)
                         : Colors.grey,
@@ -86,24 +88,72 @@ class _ResultPageState extends State<ResultPage> {
                       computeMode = 1;
                       setState(() {});
                     },
-                    180,
+                    width: 180,
                   ),
                 ],
               ),
-              Row(),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  colorButtonText(
+                    "적당히 공평하고 가까운 곳!",
+                    (computeMode == 2)
+                        ? mainColor.withOpacity(0.7)
+                        : Colors.grey,
+                    whiteTextStyle_Bold(13),
+                    () {
+                      isStartSearch = false;
+                      computeMode = 2;
+                      setState(() {});
+                    },
+                    width: 180,
+                  ),
+                  colorButtonText(
+                    "",
+                    (computeMode == 3)
+                        ? mainColor.withOpacity(0.7)
+                        : Colors.grey,
+                    whiteTextStyle_Bold(13),
+                    () {
+                      isStartSearch = false;
+                      computeMode = 3;
+                      setState(() {});
+                    },
+                    width: 180,
+                  ),
+                ],
+              ),
             ],
           ),
           SizedBox(height: 20),
           colorButtonText(
-              "검색", Colors.blue.withOpacity(0.7), whiteTextStyle(20), () {
+              "검색", Colors.blue.withOpacity(0.7), whiteTextStyle(20), () async {
+            _resultProvider.clearRoutes();
+            // 버튼 비활성화 추가, await 처리 잘 되는 지 확인
             setState(() {
-              // Result Provider 초기화
-              _resultProvider.clearRoutes();
-              isStartSearch = true;
+              isSearchFinished = false;
+            });
+
+            recommendIndexList = await recommendPlace();
+
+            setState(() {
+              isSearchFinished = true;
             });
           }),
+          colorButtonText(
+            "결과 보기",
+            Colors.blue.withOpacity(0.7),
+            whiteTextStyle(20),
+            () {
+              setState(() {
+                isStartSearch = true;
+              });
+            },
+            isActivated: isSearchFinished,
+          ),
           SizedBox(height: 20),
-          recommendWidget(),
+          recommendWidget(recommendIndexList),
           Expanded(child: SizedBox()),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -120,25 +170,26 @@ class _ResultPageState extends State<ResultPage> {
     );
   }
 
-  Widget recommendWidget() {
+  Widget recommendWidget(recommendIndexList) {
     if (isStartSearch) {
-      return FutureBuilder(
-        future: recommendPlace(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData == false) {
-            return CircularProgressIndicator();
-          } else if (snapshot.hasError) {
-            return Text(
-              "Error",
-              style: blackTextStyle(20),
-            );
-          } else {
-            List<int> recommendIndexList = snapshot.data as List<int>;
+      return recommendListView(recommendIndexList);
+      // return FutureBuilder(
+      //   future: recommendPlace(),
+      //   builder: (context, snapshot) {
+      //     if (snapshot.hasData == false) {
+      //       return CircularProgressIndicator();
+      //     } else if (snapshot.hasError) {
+      //       return Text(
+      //         "Error",
+      //         style: blackTextStyle(20),
+      //       );
+      //     } else {
+      //       List<int> recommendIndexList = snapshot.data as List<int>;
 
-            return recommendListView(recommendIndexList);
-          }
-        },
-      );
+      //       return recommendListView(recommendIndexList);
+      //     }
+      //   },
+      // );
     } else {
       return Text(
         "검색을 눌러주세요",
