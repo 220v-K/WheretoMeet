@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -65,7 +66,7 @@ class _ResultPageState extends State<ResultPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   colorButtonText(
-                    "모두에게 제일 가까운 곳!",
+                    "모두에게 제일 빠른 곳!",
                     (computeMode == 0)
                         ? mainColor.withOpacity(0.7)
                         : Colors.grey,
@@ -78,7 +79,7 @@ class _ResultPageState extends State<ResultPage> {
                     width: 180,
                   ),
                   colorButtonText(
-                    "모두에게 공평한 거리!",
+                    "모두에게 공평한 시간!",
                     (computeMode == 1)
                         ? mainColor.withOpacity(0.7)
                         : Colors.grey,
@@ -97,7 +98,7 @@ class _ResultPageState extends State<ResultPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   colorButtonText(
-                    "적당히 공평하고 가까운 곳!",
+                    "위치상 모두에게 가까운 곳!",
                     (computeMode == 2)
                         ? mainColor.withOpacity(0.7)
                         : Colors.grey,
@@ -109,19 +110,19 @@ class _ResultPageState extends State<ResultPage> {
                     },
                     width: 180,
                   ),
-                  colorButtonText(
-                    "",
-                    (computeMode == 3)
-                        ? mainColor.withOpacity(0.7)
-                        : Colors.grey,
-                    whiteTextStyle_Bold(13),
-                    () {
-                      isStartSearch = false;
-                      computeMode = 3;
-                      setState(() {});
-                    },
-                    width: 180,
-                  ),
+                  // colorButtonText(
+                  //   "",
+                  //   (computeMode == 3)
+                  //       ? mainColor.withOpacity(0.7)
+                  //       : Colors.grey,
+                  //   whiteTextStyle_Bold(13),
+                  //   () {
+                  //     isStartSearch = false;
+                  //     computeMode = 3;
+                  //     setState(() {});
+                  //   },
+                  //   width: 180,
+                  // ),
                 ],
               ),
             ],
@@ -141,6 +142,7 @@ class _ResultPageState extends State<ResultPage> {
               isSearchFinished = true;
             });
           }),
+          SizedBox(height: 10),
           colorButtonText(
             "결과 보기",
             Colors.blue.withOpacity(0.7),
@@ -251,6 +253,7 @@ class _ResultPageState extends State<ResultPage> {
         if (depart["name"] == "") {
           continue;
         }
+
         // depart에서 arrive까지 걸리는 시간 측정
         bool isFin =
             await computeTime(depart, arrive, arriveIndex, departIndex);
@@ -301,8 +304,7 @@ class _ResultPageState extends State<ResultPage> {
     var durationText = duration["text"];
     var durationValue = duration["value"];
 
-    print(durationText);
-    print(durationValue);
+    print("$durationText, $durationValue");
   }
 
   List<int> computeRecommend(int mode) {
@@ -321,28 +323,162 @@ class _ResultPageState extends State<ResultPage> {
     }
 
     Map<int, int> sortedTimeList = {};
-    // mode 0 => 걸리는 시간의 합이 최소
+    // mode 0 => 걸리는 시간의 평균(합)이 최소
     if (mode == 0) {
-      print(timeList);
-      // timeList의 value를 합산하여 새로운 Map<int, int> 생성
-      timeList.forEach((key, value) {
-        int sum = 0;
-        for (int time in value) {
-          sum += time;
-        }
-        sortedTimeList.addAll({key: sum});
-      });
-      // sort Map by value
-      sortedTimeList = SplayTreeMap.from(
-        sortedTimeList,
-        ((key1, key2) =>
-            sortedTimeList[key1]!.compareTo(sortedTimeList[key2]!)),
-      );
-      print(sortedTimeList);
+      sortedTimeList = sortMode0(timeList, sortedTimeList);
     }
-    // mode 1 => 걸리는 시간의 편차의 비율의 합이 최소
-    else if (mode == 1) {}
+    // mode 1 => 걸리는 시간들의 표준편차가 최소 (크기순 나열이므로, 분산을 사용해도 무관)
+    else if (mode == 1) {
+      sortedTimeList = sortMode1(timeList, sortedTimeList);
+    }
+
+    // mode 2 => mode0, mode1을 가중치 5:5로 계산
+    else if (mode == 2) {
+      sortedTimeList = sortMode2(timeList, sortedTimeList);
+    }
 
     return sortedTimeList.keys.toList();
+  }
+
+  Map<int, int> sortMode2(
+    Map<int, List<int>> timeList,
+    Map<int, int> sortedTimeList,
+  ) {
+    // fetch lng, lat from departPlacesList
+    List<double> lngList = [];
+    List<double> latList = [];
+    for (var depart in departPlacesList) {
+      lngList.add(depart["lng"]);
+      latList.add(depart["lat"]);
+    }
+
+    // compute average of lng, lat
+    double lngAvg = lngList.reduce((a, b) => a + b) / lngList.length;
+    double latAvg = latList.reduce((a, b) => a + b) / latList.length;
+
+    // compute distance of arrivePlacesList from lngAvg, latAvg
+    List<double> distanceList = [];
+    for (var arrive in arrivePlacesList) {
+      double lng = arrive["lng"];
+      double lat = arrive["lat"];
+      double distance = sqrt(pow(lng - lngAvg, 2) + pow(lat - latAvg, 2));
+      distanceList.add(distance);
+    }
+
+    // make map of distanceList with it's index
+    Map<int, double> distanceMap = {};
+    for (int i = 0; i < distanceList.length; i++) {
+      distanceMap.addAll({i: distanceList[i]});
+    }
+
+    // sort distanceMap by value
+    distanceMap = Map.fromEntries(distanceMap.entries.toList()
+      ..sort((e1, e2) => e1.value.compareTo(e2.value)));
+
+    print(distanceMap);
+
+    // casting to Map<int, int>
+    distanceMap.forEach((key, value) {
+      sortedTimeList.addAll({key: value.toInt()});
+    });
+
+    return sortedTimeList;
+  }
+
+  // Map<int, int> sortMode2(
+  //   Map<int, List<int>> timeList,
+  //   Map<int, int> sortedTimeList,
+  // ) {
+  //   Map<int, int> tempSortedTimeList = {};
+  //   Map<int, int> tempSortedTimeList2 = {};
+  //   Map<int, double> sortedTimeList_mode0 = {};
+  //   Map<int, double> sortedTimeList_mode1 = {};
+
+  //   // normalize mode0's value (divide by min value)
+  //   tempSortedTimeList = sortMode0(timeList, tempSortedTimeList);
+  //   int min = tempSortedTimeList.values.first;
+  //   tempSortedTimeList.forEach((key, value) {
+  //     sortedTimeList_mode0.addAll({key: (value / min)});
+  //   });
+
+  //   print(sortedTimeList_mode0);
+
+  //   // normalize mode1's value (divide by min value)
+  //   tempSortedTimeList2 = sortMode1(timeList, tempSortedTimeList2);
+  //   min = tempSortedTimeList2.values.first;
+  //   tempSortedTimeList2.forEach((key, value) {
+  //     sortedTimeList_mode1.addAll({key: (value / min)});
+  //   });
+
+  //   print(sortedTimeList_mode1);
+
+  //   // mode0, mode1의 가중치 1:1로 계산
+  //   sortedTimeList_mode0.forEach((key, value) {
+  //     double mode0 = value;
+  //     sortedTimeList.addAll({key: (mode0 * 1000).toInt()});
+  //   });
+  //   sortedTimeList_mode1.forEach((key, value) {
+  //     double mode1 = value;
+  //     sortedTimeList.update(key, (value) => value + (mode1 * 1000).toInt());
+  //   });
+
+  //   // sort sortedTimeList by value
+  //   sortedTimeList = Map.fromEntries(sortedTimeList.entries.toList()
+  //     ..sort((e1, e2) => e1.value.compareTo(e2.value)));
+
+  //   print(sortedTimeList);
+
+  //   return sortedTimeList;
+  // }
+
+  Map<int, int> sortMode1(
+    Map<int, List<int>> timeList,
+    Map<int, int> sortedTimeList,
+  ) {
+    print(timeList);
+    // timeList의 value를 합산하여 새로운 Map<int, int> 생성
+    timeList.forEach((key, value) {
+      int sum = 0;
+      for (int time in value) {
+        sum += time;
+      }
+      int avg = sum ~/ value.length; // 평균
+      int variance = 0;
+      for (int time in value) {
+        variance += (time - avg) * (time - avg); // 편차 제곱합
+      }
+      variance = variance ~/ value.length; // 분산 (편차 제곱합의 평균)
+      // print("key: $key, variance: $variance");
+      sortedTimeList.addAll({key: variance});
+    });
+    // sort Map by value (value = 분산)
+    sortedTimeList = SplayTreeMap.from(
+      sortedTimeList,
+      ((key1, key2) => sortedTimeList[key1]!.compareTo(sortedTimeList[key2]!)),
+    );
+    print(sortedTimeList);
+    return sortedTimeList;
+  }
+
+  Map<int, int> sortMode0(
+    Map<int, List<int>> timeList,
+    Map<int, int> sortedTimeList,
+  ) {
+    print(timeList);
+    // timeList의 value를 합산하여 새로운 Map<int, int> 생성
+    timeList.forEach((key, value) {
+      int sum = 0;
+      for (int time in value) {
+        sum += time;
+      }
+      sortedTimeList.addAll({key: sum});
+    });
+    // sort Map by value (value = 합계)
+    sortedTimeList = SplayTreeMap.from(
+      sortedTimeList,
+      ((key1, key2) => sortedTimeList[key1]!.compareTo(sortedTimeList[key2]!)),
+    );
+    print(sortedTimeList);
+    return sortedTimeList;
   }
 }
