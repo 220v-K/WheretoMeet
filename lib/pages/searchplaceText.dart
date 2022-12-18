@@ -47,7 +47,8 @@ class _SearchPlaceTextState extends State<SearchPlaceText> {
       Column(
         children: [
           searchHeader(context),
-          searchInMap(context),
+          // * 지도에서 검색하기 기능 삭제, 추후 추가 예정
+          // searchInMap(context),
           searchResultWidget,
         ],
       ),
