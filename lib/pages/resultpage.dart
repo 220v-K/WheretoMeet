@@ -19,9 +19,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:location/location.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:wheretomeet/pages/resultmappage.dart';
 import 'package:wheretomeet/provider/arriveProvider.dart';
 import 'package:wheretomeet/provider/departProvider.dart';
 import 'package:wheretomeet/provider/resultProvider.dart';
+import 'package:wheretomeet/provider/tempPlaceProvider.dart';
 
 class ResultPage extends StatefulWidget {
   const ResultPage({super.key});
@@ -34,6 +36,7 @@ class _ResultPageState extends State<ResultPage> {
   late DepartProvider _departProvider;
   late ArriveProvider _arriveProvider;
   late ResultProvider _resultProvider;
+  late tempPlaceProvider _tempPlaceProvider;
 
   List<Map> departPlacesList = [];
   List<Map> arrivePlacesList = [];
@@ -47,9 +50,11 @@ class _ResultPageState extends State<ResultPage> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     _departProvider = Provider.of<DepartProvider>(context, listen: false);
     _arriveProvider = Provider.of<ArriveProvider>(context, listen: false);
     _resultProvider = Provider.of<ResultProvider>(context, listen: false);
+    _tempPlaceProvider = Provider.of<tempPlaceProvider>(context, listen: false);
 
     departPlacesList = _departProvider.places;
     arrivePlacesList = _arriveProvider.places;
@@ -155,8 +160,7 @@ class _ResultPageState extends State<ResultPage> {
             isActivated: isSearchFinished,
           ),
           SizedBox(height: 20),
-          recommendWidget(recommendIndexList),
-          Expanded(child: SizedBox()),
+          recommendWidget(recommendIndexList, width),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -172,9 +176,9 @@ class _ResultPageState extends State<ResultPage> {
     );
   }
 
-  Widget recommendWidget(recommendIndexList) {
+  Widget recommendWidget(recommendIndexList, double width) {
     if (isStartSearch) {
-      return recommendListView(recommendIndexList);
+      return recommendListView(recommendIndexList, width);
       // return FutureBuilder(
       //   future: recommendPlace(),
       //   builder: (context, snapshot) {
@@ -193,14 +197,16 @@ class _ResultPageState extends State<ResultPage> {
       //   },
       // );
     } else {
-      return Text(
-        "검색을 눌러주세요",
-        style: blackTextStyle(20),
+      return Expanded(
+        child: Text(
+          "검색을 눌러주세요",
+          style: blackTextStyle(20),
+        ),
       );
     }
   }
 
-  Widget recommendListView(List<int> recommendIndexList) {
+  Widget recommendListView(List<int> recommendIndexList, double width) {
     return Expanded(
       child: Column(
         children: [
@@ -218,7 +224,7 @@ class _ResultPageState extends State<ResultPage> {
                 shrinkWrap: true,
                 itemCount: recommendIndexList.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return recommendListBox(index, recommendIndexList);
+                  return recommendListBox(index, recommendIndexList, width);
                 },
               ),
             ),
@@ -228,11 +234,48 @@ class _ResultPageState extends State<ResultPage> {
     );
   }
 
-  Text recommendListBox(int index, List<int> recommendIndexList) {
-    return Text(
-      "${index + 1}번째 장소: ${arrivePlacesList[recommendIndexList[index]]['name']}",
-      style: blackTextStyle(20),
+  Widget recommendListBox(
+      int index, List<int> recommendIndexList, double width) {
+    return CupertinoButton(
+      onPressed: () {
+        // save result lat, lng to tempPlaceProvider
+        _tempPlaceProvider.setPlace(
+          arrivePlacesList[recommendIndexList[index]]['lat'],
+          arrivePlacesList[recommendIndexList[index]]['lng'],
+          arrivePlacesList[recommendIndexList[index]]['name'],
+          index,
+        );
+
+        // go to result Map page
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ResultMapPage(),
+          ),
+        );
+      },
+      minSize: 0,
+      padding: EdgeInsets.zero,
+      child: Container(
+        width: width * 0.8,
+        margin: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          border: Border.all(color: mainColor, width: 2),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            "${index + 1}. ${arrivePlacesList[recommendIndexList[index]]['name']}",
+            style: blackTextStyle(20),
+          ),
+        ),
+      ),
     );
+    // Text(
+    //   "${index + 1}번째 장소: ${arrivePlacesList[recommendIndexList[index]]['name']}",
+    //   style: blackTextStyle(20),
+    // );
   }
 
   Future<List<int>> recommendPlace() async {
