@@ -243,7 +243,7 @@ class _ResultPageState extends State<ResultPage> {
           arrivePlacesList[recommendIndexList[index]]['lat'],
           arrivePlacesList[recommendIndexList[index]]['lng'],
           arrivePlacesList[recommendIndexList[index]]['name'],
-          index,
+          recommendIndexList[index],
         );
 
         // go to result Map page

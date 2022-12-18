@@ -43,7 +43,7 @@ class _ResultMapPageState extends State<ResultMapPage> {
   List<LatLng> polylineCoordinates = [];
   PolylinePoints polylinePoints = PolylinePoints();
 
-  String googleAPiKey = dotenv.env['GOOGLE_PLACES_API_2'] ?? "";
+  String googleAPiKey = dotenv.env['GOOGLE_POLYLINE_API'] ?? "";
 
   @override
   void initState() {
@@ -68,6 +68,7 @@ class _ResultMapPageState extends State<ResultMapPage> {
 
     // 선택한 도착지 마커
     final resultMarker = Marker(
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueCyan),
       markerId: MarkerId("result"),
       position: LatLng(placeLat, placeLng),
       infoWindow: InfoWindow(
@@ -254,67 +255,76 @@ class _ResultMapPageState extends State<ResultMapPage> {
   }
 
   void setPolylines() async {
-    double arriveLat = _arriveProvider.places[0]["lat"];
-    double arriveLng = _arriveProvider.places[0]["lng"];
-    double departLat = _departProvider.places[0]["lat"];
-    double departLng = _departProvider.places[0]["lng"];
+    // double arriveLat = _arriveProvider.places[0]["lat"];
+    // double arriveLng = _arriveProvider.places[0]["lng"];
+    // double departLat = _departProvider.places[0]["lat"];
+    // double departLng = _departProvider.places[0]["lng"];
 
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-      googleAPiKey,
-      PointLatLng(departLat, departLng),
-      PointLatLng(arriveLat, arriveLng),
-    );
+    // print("$departLat, $departLng, $arriveLat, $arriveLng");
 
-    if (result.status == 'OK') {
-      result.points.forEach((PointLatLng point) {
+    // PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+    //   googleAPiKey,
+    //   PointLatLng(departLat, departLng),
+    //   PointLatLng(arriveLat, arriveLng),
+    // );
+
+    // print(result.status);
+    // print(result.errorMessage);
+
+    // if (result.status == 'OK') {
+    //   result.points.forEach((PointLatLng point) {
+    //     polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+    //   });
+    // }
+
+    // print("polylineCoordinates: $polylineCoordinates");
+
+    List<List<PointLatLng>> result = [];
+    List<List<LatLng>> polylineCoordinatesList = [];
+    List<Color> polyLineColors = [
+      Colors.red,
+      Colors.green,
+      Colors.blue,
+      Colors.purple,
+      Colors.orange,
+      Colors.pink,
+      Colors.brown,
+      Colors.grey,
+      Colors.black,
+      mainColor,
+    ];
+
+    int arrivalIndex = _tempPlaceProvider.index;
+
+    for (var element in _resultProvider.routes[arrivalIndex]) {
+      String polyLineOverview = element["overview_polyline"]["points"];
+      List<PointLatLng> routePolylinePoints =
+          polylinePoints.decodePolyline(polyLineOverview);
+
+      result.add(routePolylinePoints);
+    }
+
+    for (var element in result) {
+      polylineCoordinates.clear();
+      for (var point in element) {
         polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-      });
+      }
+      dynamic temp = [...polylineCoordinates]; //! deep copy
+      polylineCoordinatesList.add(temp);
     }
 
     setState(() {
-      _polylines.add(
-        Polyline(
-          polylineId: PolylineId(''),
-          width: 10,
-          color: mainColor,
-          points: polylineCoordinates,
-        ),
-      );
+      for (int i = 0; i < polylineCoordinatesList.length; i++) {
+        print(i);
+        _polylines.add(
+          Polyline(
+            polylineId: PolylineId('$i번째 경로'),
+            width: 4,
+            color: polyLineColors[i],
+            points: polylineCoordinatesList[i],
+          ),
+        );
+      }
     });
   }
-}
-
-/// Decode the google encoded string using Encoded Polyline Algorithm Format
-/// for more info about the algorithm check https://developers.google.com/maps/documentation/utilities/polylinealgorithm
-///
-///return [List]
-List<PointLatLng> decodeEncodedPolyline(String encoded) {
-  List<PointLatLng> poly = [];
-  int index = 0, len = encoded.length;
-  int lat = 0, lng = 0;
-
-  while (index < len) {
-    int b, shift = 0, result = 0;
-    do {
-      b = encoded.codeUnitAt(index++) - 63;
-      result |= (b & 0x1f) << shift;
-      shift += 5;
-    } while (b >= 0x20);
-    int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-    lat += dlat;
-
-    shift = 0;
-    result = 0;
-    do {
-      b = encoded.codeUnitAt(index++) - 63;
-      result |= (b & 0x1f) << shift;
-      shift += 5;
-    } while (b >= 0x20);
-    int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-    lng += dlng;
-    PointLatLng p =
-        new PointLatLng((lat / 1E5).toDouble(), (lng / 1E5).toDouble());
-    poly.add(p);
-  }
-  return poly;
 }
