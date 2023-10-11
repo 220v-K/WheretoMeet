@@ -2,6 +2,10 @@
 ## 2022년도 2학기 동국대학교 개별연구 - 약속장소 추천 애플리케이션  <br>
 **개별연구(CS약속장소 추천어플리케이션 설계 및 구현)**
 <br><br>
+### 📹 Videos (시연 영상 및 발표 영상)
+https://www.youtube.com/watch?v=X6yvgTOPN3Y&ab_channel=220v<br>
+https://www.youtube.com/watch?v=o6RNFz7sGps&ab_channel=220v
+<br><br>
 ### ⏰ Period
 2022.10.29 ~ 2022.12.19
 <br><br>
